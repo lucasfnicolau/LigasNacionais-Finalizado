@@ -99,7 +99,7 @@ class LigasTableViewController: UITableViewController {
     }
     
     func configTimeAlertController(paraSection section: Int) {
-        timeAlertController = UIAlertController(title: "Novo Time", message: "Adicione um time neste liga", preferredStyle: .alert)
+        timeAlertController = UIAlertController(title: "Novo Time", message: "Adicione um time nesta liga", preferredStyle: .alert)
         timeAlertController?.addTextField(configurationHandler: { textField in textField.placeholder = "Nome do time" })
         
         let cancelarAction = UIAlertAction(title: "Cancelar", style: .cancel)
