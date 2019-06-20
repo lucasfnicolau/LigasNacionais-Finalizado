@@ -8,62 +8,36 @@
 
 import UIKit
 
+protocol LigasTableViewControllerDelegate {
+    func mostrar(alerta: UIAlertController?, paraSection section: Int?)
+    func addLiga(nome: String)
+    func addTime(nome: String, naLiga liga: Liga)
+}
+
 class LigasTableViewController: UITableViewController {
 
     var ligas = [Liga]()
     
     // Declaração dos nossos AlertController's
-    var ligaAlertController: UIAlertController?
-    var timeAlertController: UIAlertController?
+    var addLigaAlertController: AddLigaAlertController?
+    var addTimeAlertController: AddTimeAlertController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.tableFooterView = UIView(frame: CGRect.zero)
         
-        // Chamada da nossas função de configuração do AlertController
-        configLigaAlertController()
-    }
-    
-    func configLigaAlertController() {
-        // Instanciando o AlertController com um título e um texto a ser exibido
-        ligaAlertController = UIAlertController(title: "Liga Nacional", message: "Adicione uma liga nacional", preferredStyle: .alert)
+        // Instanciando nosso ligaAlertController
+        addLigaAlertController = AddLigaAlertController(title: "Nova liga", message: "Adicione uma liga nacional", preferredStyle: .alert)
         
-        // Adicionando um textField com um placeholder no nosso AlertController
-        ligaAlertController?.addTextField(configurationHandler: { textField in textField.placeholder = "Nome do país" })
+        // Configurando o layout - adicionando o TextField e as ações (Action's)
+        addLigaAlertController?.configLayout()
         
-        // Criando actions de Cancelar e Add
-        let cancelarAction = UIAlertAction(title: "Cancelar", style: .cancel)
-        let addAction = UIAlertAction(title: "Add", style: .default) { (action) in
-            
-            // Pegando o valor preenchido pelo usuário e checando se não é um espaço em branco
-            guard let nomeLigaTextField = self.ligaAlertController?.textFields?[0] else { return }
-            guard let nomeLiga = nomeLigaTextField.text, nomeLigaTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) != "" else { return }
-            
-            // Criação da imagem da bandeira, que se for alguma das previstas pelo app mostra a respectiva
-            // bandeira, senão mostra uma padrão
-            var imagem: UIImage?
-            if let bandeira = Bandeira(rawValue: nomeLiga.lowercased().trimmingCharacters(in: .whitespacesAndNewlines).folding(options: .diacriticInsensitive, locale: .current)) {
-                imagem = UIImage(named: bandeira.rawValue)
-            } else {
-                imagem = UIImage(named: Bandeira.padrao.rawValue)
-            }
-            
-            // Cria uma liga e a adiciona no vetor de ligas
-            guard let imagemPais = imagem else { return }
-            let liga = Liga(nome: nomeLiga.uppercased(), imagemPais: imagemPais)
-            self.ligas.append(liga)
-            
-            // Recarrega os dados da tableView
-            self.tableView.reloadData()
-            
-            // Limpa o textField para estar vazio na próxima vez que aparecer
-            nomeLigaTextField.text = ""
-        }
+        addLigaAlertController?.delegate = self
         
-        // Colocando as actions no AlertController
-        ligaAlertController?.addAction(cancelarAction)
-        ligaAlertController?.addAction(addAction)
+        addTimeAlertController = AddTimeAlertController(title: "Novo time", message: "Adicione um time nesta liga", preferredStyle: .alert)
+        addTimeAlertController?.configLayout()
+        addTimeAlertController?.delegate = self
     }
 
     // MARK: - Table view data source
@@ -77,47 +51,15 @@ class LigasTableViewController: UITableViewController {
     }
     
     @IBAction func addLiga(_ sender: UIBarButtonItem) {
-        guard let ligaAlertController = ligaAlertController else { return }
-        self.present(ligaAlertController, animated: true, completion: nil)
+        self.mostrar(alerta: addLigaAlertController)
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let ligaView = LigaView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: LigaView.ALTURA))
         ligaView.configLayout(paraLiga: ligas[section], naSection: section)
-        
-        // Definindo uma ação para ser executada quando o botão for clicado
-        ligaView.addTimeButton?.addTarget(self, action: #selector(mostrarTimeAlertController(botao:)), for: .touchUpInside)
+        ligaView.delegate = self
         
         return ligaView
-    }
-    
-    @objc func mostrarTimeAlertController(botao: UIButton) {
-        configTimeAlertController(paraSection: botao.tag)
-        
-        guard let timeAlertController = timeAlertController else { return }
-        self.present(timeAlertController, animated: true, completion: nil)
-    }
-    
-    func configTimeAlertController(paraSection section: Int) {
-        timeAlertController = UIAlertController(title: "Novo Time", message: "Adicione um time nesta liga", preferredStyle: .alert)
-        timeAlertController?.addTextField(configurationHandler: { textField in textField.placeholder = "Nome do time" })
-        
-        let cancelarAction = UIAlertAction(title: "Cancelar", style: .cancel)
-        let addAction = UIAlertAction(title: "Add", style: .default) { (action) in
-            
-            guard let nomeTimeTextField = self.timeAlertController?.textFields?[0] else { return }
-            guard let nomeTime = nomeTimeTextField.text, nomeTimeTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) != "" else { return }
-            
-            self.ligas[section].add(time: nomeTime.uppercased())
-            
-            let indexPath = IndexPath(row: self.ligas[section].times.count - 1, section: section)
-            self.tableView.insertRows(at: [indexPath], with: .automatic)
-            
-            nomeTimeTextField.text = ""
-        }
-        
-        timeAlertController?.addAction(cancelarAction)
-        timeAlertController?.addAction(addAction)
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -135,5 +77,46 @@ class LigasTableViewController: UITableViewController {
         celula.textLabel?.text = time
         
         return celula
+    }
+}
+
+extension LigasTableViewController: LigasTableViewControllerDelegate {
+    
+    func mostrar(alerta: UIAlertController?, paraSection section: Int? = nil) {
+        guard let alerta = alerta else { return }
+        
+        if section != nil {
+            guard let alertaTime = alerta as? AddTimeAlertController else { return }
+            alertaTime.liga = ligas[section!] // Force unwrap pois já verificamos se não é nulo
+            self.present(alertaTime, animated: true, completion: nil)
+            
+        } else {
+            self.present(alerta, animated: true, completion: nil)
+        }
+    }
+    
+    func addLiga(nome: String) {
+        
+        // Criação da imagem da bandeira, que se for alguma das previstas pelo app mostra a respectiva
+        // bandeira, senão mostra uma padrão
+        var imagem: UIImage?
+        if let bandeira = Bandeira(rawValue: nome.lowercased().trimmingCharacters(in: .whitespacesAndNewlines).folding(options: .diacriticInsensitive, locale: .current)) {
+            imagem = UIImage(named: bandeira.rawValue)
+        } else {
+            imagem = UIImage(named: Bandeira.padrao.rawValue)
+        }
+        
+        // Cria uma liga e a adiciona no vetor de ligas
+        guard let imagemPais = imagem else { return }
+        let liga = Liga(nome: nome.uppercased(), imagemPais: imagemPais)
+        self.ligas.append(liga)
+        
+        // Recarrega os dados da tableView
+        self.tableView.reloadData()
+    }
+    
+    func addTime(nome: String, naLiga liga: Liga) {
+        liga.add(time: nome)
+        self.tableView.reloadData()
     }
 }

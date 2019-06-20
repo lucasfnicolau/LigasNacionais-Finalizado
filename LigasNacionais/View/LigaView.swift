@@ -13,6 +13,7 @@ class LigaView: UIView {
     var imageView: UIImageView?
     var nomeLabel: UILabel?
     var addTimeButton: UIButton?
+    var delegate: LigasTableViewControllerDelegate?
     
     // Constante estática para utilizarmos quando quisermos o tamanho da section
     static let ALTURA: CGFloat = 60
@@ -28,6 +29,7 @@ class LigaView: UIView {
         addTimeButton?.setTitle("Add Time", for: .normal)
         addTimeButton?.setTitleColor(#colorLiteral(red: 0, green: 0.5628422499, blue: 0.3188166618, alpha: 1), for: .normal)
         addTimeButton?.titleLabel?.font = addTimeButton?.titleLabel?.font.withSize(14)
+        addTimeButton?.addTarget(self, action: #selector(addTime), for: .touchUpInside)
         
         guard let imageView = imageView else { return }
         guard let nomeLabel = nomeLabel else { return }
@@ -71,5 +73,11 @@ class LigaView: UIView {
         // Definindo a tag do botão como sendo igual à section recebida por parâmetro,
         // para sabermos qual section foi selecionada quando um botão for pressionado
         self.addTimeButton?.tag = section
+    }
+    
+    @objc func addTime() {
+        guard let delegate = delegate else { return }
+        guard let ligasTVC = delegate as? LigasTableViewController else { return }
+        ligasTVC.mostrar(alerta: ligasTVC.addTimeAlertController, paraSection: self.tag)
     }
 }

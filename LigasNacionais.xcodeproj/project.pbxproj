@@ -14,6 +14,8 @@
 		B6092B3C22B8A16D002DAAE8 /* LigasTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6092B3B22B8A16D002DAAE8 /* LigasTableViewController.swift */; };
 		B6092B6922B9757C002DAAE8 /* Liga.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6092B6822B9757C002DAAE8 /* Liga.swift */; };
 		B6092B8F22B9CE73002DAAE8 /* LigaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6092B8E22B9CE73002DAAE8 /* LigaView.swift */; };
+		B6092B9322BABCCE002DAAE8 /* AddLigaAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6092B9222BABCCE002DAAE8 /* AddLigaAlertController.swift */; };
+		B6092B9D22BB1AE4002DAAE8 /* AddTimeAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6092B9C22BB1AE4002DAAE8 /* AddTimeAlertController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		B6092B3B22B8A16D002DAAE8 /* LigasTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LigasTableViewController.swift; sourceTree = "<group>"; };
 		B6092B6822B9757C002DAAE8 /* Liga.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Liga.swift; sourceTree = "<group>"; };
 		B6092B8E22B9CE73002DAAE8 /* LigaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LigaView.swift; sourceTree = "<group>"; };
+		B6092B9222BABCCE002DAAE8 /* AddLigaAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLigaAlertController.swift; sourceTree = "<group>"; };
+		B6092B9C22BB1AE4002DAAE8 /* AddTimeAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTimeAlertController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +77,8 @@
 			isa = PBXGroup;
 			children = (
 				B6092B3B22B8A16D002DAAE8 /* LigasTableViewController.swift */,
+				B6092B9222BABCCE002DAAE8 /* AddLigaAlertController.swift */,
+				B6092B9C22BB1AE4002DAAE8 /* AddTimeAlertController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -181,8 +187,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6092B9322BABCCE002DAAE8 /* AddLigaAlertController.swift in Sources */,
 				B6092B6922B9757C002DAAE8 /* Liga.swift in Sources */,
 				B6092B8F22B9CE73002DAAE8 /* LigaView.swift in Sources */,
+				B6092B9D22BB1AE4002DAAE8 /* AddTimeAlertController.swift in Sources */,
 				B6092B3C22B8A16D002DAAE8 /* LigasTableViewController.swift in Sources */,
 				B6092B2822B89915002DAAE8 /* AppDelegate.swift in Sources */,
 			);
