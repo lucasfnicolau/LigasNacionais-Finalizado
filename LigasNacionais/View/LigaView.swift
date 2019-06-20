@@ -78,6 +78,6 @@ class LigaView: UIView {
     @objc func addTime() {
         guard let delegate = delegate else { return }
         guard let ligasTVC = delegate as? LigasTableViewController else { return }
-        ligasTVC.mostrar(alerta: ligasTVC.addTimeAlertController, paraSection: self.tag)
+        ligasTVC.mostrar(alerta: ligasTVC.addTimeAlertController, paraSection: self.addTimeButton?.tag)
     }
 }
